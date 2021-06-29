@@ -9,10 +9,11 @@ class Despesa {
     }
 
     validarDados() {
-        for (let i in Despesa) {
+        for (let i in this) {
             if(this[i] == undefined || this[i] == '' || this[i] ==null)
             return false
         }
+        return true
     }
 }
 
@@ -62,7 +63,22 @@ function cadastrarDespesa() {
     
     if(despesa.validarDados()) {
         bd.gravar(despesa)
+
+        document.getElementById('modal_titulo').innerHTML = 'Registro inserido com sucesso'
+        document.getElementById('modal_titulo_div').className = 'modal-header text-success'
+        document.getElementById('modal_conteudo').innerHTML = ' Despesa foi cadastrada com sucesso!'
+        document.getElementById('modal_btn').innerHTML = 'Voltar'
+        document.getElementById('modal_btn').className = 'btn btn-success'
+        
+        $('#modalRegistraDespesa').modal('show')
     } else {
 
+        document.getElementById('modal_titulo').innerHTML = 'Erro na inclusão do registro'
+        document.getElementById('modal_titulo_div').className = 'modal-header text-danger'
+        document.getElementById('modal_conteudo').innerHTML = 'Erro na gravação verifique se os dados estão preenchidos corretamente'
+        document.getElementById('modal_btn').innerHTML = 'Voltar e corrigir'
+        document.getElementById('modal_btn').className = 'btn btn-danger'
+
+        $('#modalRegistraDespesa').modal('show')
     }
 }
