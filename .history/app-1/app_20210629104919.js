@@ -52,7 +52,7 @@ function cadastrarDespesa() {
         valor.value
     )
 
-    
+    if(despesa)
 
     bd.gravar(despesa)
 }

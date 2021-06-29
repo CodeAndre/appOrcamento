@@ -11,7 +11,7 @@ class Despesa {
 
 class Bd {
 
-    constructor() { //ID inicial
+    constructor() {
         let id = localStorage.getItem('id')
 
         if(id === null) {
@@ -19,15 +19,12 @@ class Bd {
         }
     }
     getProximoId() {
-        let proximoId = localStorage.getItem('id')
-        return parseInt(proximoId) + 1
+        let proximoId = localStorage.getItem()
     }
     gravar(d) {
-        let id = this.getProximoId() //id atualizado + 1
+        localStorage.setItem('despesa', JSON.stringify(d))
 
-        localStorage.setItem(id, JSON.stringify(d))
-
-        localStorage.setItem('id', id)
+        localStorage
     }
 }
 
@@ -51,8 +48,6 @@ function cadastrarDespesa() {
         descricao.value, 
         valor.value
     )
-
-    
 
     bd.gravar(despesa)
 }

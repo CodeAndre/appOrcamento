@@ -1,0 +1,4 @@
+function cadastrarDespesa() {
+
+    document.getElementById
+}
