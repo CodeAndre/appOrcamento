@@ -58,6 +58,9 @@ class Bd {
             if(despesa === null) {
                 continue
             }
+
+            despesa.id = i
+
             despesas.push(despesa)
         }
 
@@ -72,7 +75,7 @@ class Bd {
         console.log(despesasFiltradas)
 
         //FILTROS
-        
+
         //ano 
         if(despesa.ano != '') {
             despesasFiltradas =despesasFiltradas.filter(d => d.ano == despesa.ano)
@@ -98,7 +101,11 @@ class Bd {
             despesasFiltradas =despesasFiltradas.filter(d => d.valor == despesa.valor)
         } 
 
-        console.log(despesasFiltradas)
+        return despesasFiltradas
+    }
+
+    remover(id) {
+        localStorage.removeItem(id)
     }
 }
 
@@ -154,14 +161,15 @@ function cadastrarDespesa() {
     }
 }
 
-function carregaListaDespesas() {
+function carregaListaDespesas( despesas = Array(), filtro = false) {
 
-    let despesas = Array()
-
-    despesas = bd.recuperarTodosRegistros()
+    if(despesas.length == 0 && filtro == false) {
+        despesas = bd.recuperarTodosRegistros()
+    }
 
     //selecioando o tbody para criar programaticamente
     let listaDespesas = document.getElementById('listaDespesas')
+    listaDespesas.innerHTML = ''
 
     // percorreer o array Despesas, listando cada despesa 
     despesas.forEach(function(d) {
@@ -173,7 +181,7 @@ function carregaListaDespesas() {
          linha.insertCell(0).innerHTML = `${d.dia}/${d.mes}/${d.ano}`
 
          //ajustar o tipo
-         switch(d.tipo){
+        switch(d.tipo){
             case '1' : d.tipo = 'Alimentação'
                 break
             case '2' : d.tipo = 'Educação'
@@ -184,13 +192,30 @@ function carregaListaDespesas() {
                 break
             case '5' : d.tipo = 'Transporte'
                 break
-         }
+        }
 
-         linha.insertCell(1).innerHTML = d.tipo
+        linha.insertCell(1).innerHTML = d.tipo
 
-         linha.insertCell(2).innerHTML = d.descricao
+        linha.insertCell(2).innerHTML = d.descricao
 
-         linha.insertCell(3).innerHTML = d.valor
+        linha.insertCell(3).innerHTML = d.valor
+
+        //criar o botão de exclusão
+        let btn = document.createElement("button")
+        btn.className = 'btn btn-danger'
+        btn.innerHTML = '<i class="fas fa-times"></i>'
+        btn.id = `id_despesa_${d.id}`
+        btn.onclick = function() {
+            //remover despesa
+            let id = this.id.replace('id_despesa_', '')
+
+            bd.remover(id)
+
+            window.location.reload()
+        }
+        linha.insertCell(4).append(btn)
+
+
     })
 }
 
@@ -205,5 +230,7 @@ function pesquisarDespesa() {
 
     let despesa = new Despesa(ano, mes, dia, tipo, descricao, valor)
 
-    bd.pesquisar(despesa)
+    let despesas = bd.pesquisar(despesa)
+
+    this.carregaListaDespesas(despesas, true)
 }
