@@ -10,7 +10,7 @@ class Despesa {
 
     validarDados() {
         for (let i in this) {
-            if(this[i] == undefined || this[i] == '' || this[i] ==null)
+            if(this[i] == undefined || this[i] == '' || this[i] == null)
             return false
         }
         return true
@@ -26,10 +26,12 @@ class Bd {
             localStorage.setItem('id', 0)
         }
     }
+
     getProximoId() {
         let proximoId = localStorage.getItem('id')
         return parseInt(proximoId) + 1
     }
+
     gravar(d) {
         let id = this.getProximoId() //id atualizado + 1
 
@@ -37,6 +39,7 @@ class Bd {
 
         localStorage.setItem('id', id)
     }
+
     recuperarTodosRegistros() {
 
         //Array de despesas 
@@ -49,10 +52,16 @@ class Bd {
             //recuperar despesa
             let despesa = JSON.parse(localStorage.getItem(i))
 
+            //verificar se exite a possibilidade de haver indices que foram removidos
+            //vamos pular esses itens
+
+            if(despesa === null) {
+                continue
+            }
             despesas.push(despesa)
         }
 
-        console.log(despesas)
+        return despesas
     }
 }
 
@@ -101,5 +110,43 @@ function cadastrarDespesa() {
 }
 
 function carregaListaDespesas() {
-    bd.recuperarTodosRegistros()
+
+    let despesas = Array()
+
+    despesas = bd.recuperarTodosRegistros()
+
+    console.log(despesas)
+
+    //selecioando o tbody para criar programaticamente
+    let listaDespesas = document.getElementById('listaDespesas')
+
+    // percorreer o array Despesas, listando cada despesa 
+    despesas.forEach(function(d) {
+        
+        //criando o elemento HTML
+        let linha = listaDespesas.insertRow()
+
+        //insertir valores, criar as colunas
+         linha.insertCell(0).innerHTML = `${d.dia}/${d.mes}/${d.ano}`
+
+         //ajustar o tipo
+         switch(d.tipo){
+            case '1' : d.tipo = 'Alimentação'
+                break
+            case '2' : d.tipo = 'Educação'
+                break
+            case '3' : d.tipo = 'Lazer'
+                break
+            case '4' : d.tipo = 'Saúde'
+                break
+            case '5' : d.tipo = 'Transporte'
+                break
+         }
+
+         linha.insertCell(1).innerHTML = d.tipo
+
+         linha.insertCell(2).innerHTML = d.descricao
+
+         linha.insertCell(3).innerHTML = d.valor
+    })
 }
