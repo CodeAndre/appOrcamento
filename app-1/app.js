@@ -63,6 +63,43 @@ class Bd {
 
         return despesas
     }
+
+    pesquisar(despesa) {
+        let despesasFiltradas = Array()
+
+        despesasFiltradas = this.recuperarTodosRegistros()
+
+        console.log(despesasFiltradas)
+
+        //FILTROS
+        
+        //ano 
+        if(despesa.ano != '') {
+            despesasFiltradas =despesasFiltradas.filter(d => d.ano == despesa.ano)
+        } 
+        //mes
+        if(despesa.mes != '') {
+            despesasFiltradas =despesasFiltradas.filter(d => d.mes == despesa.mes)
+        } 
+        //dia 
+        if(despesa.dia != '') {
+            despesasFiltradas =despesasFiltradas.filter(d => d.dia == despesa.dia)
+        } 
+        //tipo 
+        if(despesa.tipo != '') {
+            despesasFiltradas =despesasFiltradas.filter(d => d.tipo == despesa.tipo)
+        } 
+        //descricao 
+        if(despesa.descricao != '') {
+            despesasFiltradas =despesasFiltradas.filter(d => d.descricao == despesa.descricao)
+        } 
+        //valor
+        if(despesa.valor != '') {
+            despesasFiltradas =despesasFiltradas.filter(d => d.valor == despesa.valor)
+        } 
+
+        console.log(despesasFiltradas)
+    }
 }
 
 let bd = new Bd()
@@ -97,6 +134,14 @@ function cadastrarDespesa() {
         document.getElementById('modal_btn').className = 'btn btn-success'
         
         $('#modalRegistraDespesa').modal('show')
+
+        ano.value = '' 
+        mes.value = '' 
+        dia.value = '' 
+        tipo.value = '' 
+        descricao.value = '' 
+        valor.value = ''
+
     } else {
 
         document.getElementById('modal_titulo').innerHTML = 'Erro na inclusão do registro'
@@ -114,8 +159,6 @@ function carregaListaDespesas() {
     let despesas = Array()
 
     despesas = bd.recuperarTodosRegistros()
-
-    console.log(despesas)
 
     //selecioando o tbody para criar programaticamente
     let listaDespesas = document.getElementById('listaDespesas')
@@ -149,4 +192,18 @@ function carregaListaDespesas() {
 
          linha.insertCell(3).innerHTML = d.valor
     })
+}
+
+function pesquisarDespesa() {
+
+    let ano = document.getElementById('ano').value
+    let mes = document.getElementById('mes').value
+    let dia = document.getElementById('dia').value
+    let tipo = document.getElementById('tipo').value
+    let descricao = document.getElementById('descricao').value
+    let valor = document.getElementById('valor').value
+
+    let despesa = new Despesa(ano, mes, dia, tipo, descricao, valor)
+
+    bd.pesquisar(despesa)
 }
